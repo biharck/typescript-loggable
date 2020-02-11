@@ -1,10 +1,10 @@
 {
-  "name": "typescript-logger",
+  "name": "typescript-loggable",
   "version": "1.0.0",
-  "description": "Typescript Logger lib",
+  "description": "Typescript logger lib",
   "author": "Biharck Araújo",
-  "main": "./dist/typescript-logger.js",
-  "typings": "./dist/typescript-logger.d.ts",
+  "main": "./dist/typescript-loggable.js",
+  "typings": "./dist/typescript-loggable.d.ts",
   "scripts": {
     "build": "npm run clean && tsc",
     "clean": "rimraf dist",
