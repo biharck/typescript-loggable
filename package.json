@@ -1,0 +1,45 @@
+{
+  "name": "typescript-logger",
+  "version": "1.0.0",
+  "description": "Typescript Logger lib",
+  "author": "Biharck Araújo",
+  "main": "./dist/typescript-logger.js",
+  "typings": "./dist/typescript-logger.d.ts",
+  "scripts": {
+    "build": "npm run clean && tsc",
+    "clean": "rimraf dist",
+    "lint": "tslint ./src/**/*.ts ./test/**/*.ts",
+    "test": "echo 'hey'",
+    "lint:fix": "tslint --fix ./src/**/.ts ./test/**/.ts -t verbose",
+    "tsc": "tsc"
+  },
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "bugs": {
+    "url": ""
+  },
+  "directories": {
+    "lib": "dist"
+  },
+  "peerDependencies": {
+    "typescript-ioc": "^1.2.6"
+  },
+  "devDependencies": {
+    "@types/node": "^13.7.0",
+    "@types/winston": "^2.4.4",
+    "rimraf": "^2.7.1",
+    "tslint": "^6.0.0",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^3.7.5",
+    "typescript-ioc": "^1.2.6"
+  },
+  "dependencies": {
+    "ts-node": "^8.6.2",
+    "winston": "^3.2.1"
+  }
+}
