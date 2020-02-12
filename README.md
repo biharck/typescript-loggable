@@ -1,4 +1,4 @@
-# This is a in progress logger library
+# This is an in progress logger library
 
 up to now, in order to use it you can:
 
