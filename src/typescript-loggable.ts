@@ -1,18 +1,21 @@
-import { AutoWired, Singleton } from 'typescript-ioc';
+'use strict';
+
 import { inspect } from 'util';
 import * as Winston from 'winston';
+const parentModule = require('parent-module');
 
 export enum LogLevel {
     error, warn, info, debug
 }
-@Singleton
-@AutoWired
 export class Logger {
+    
     private level: LogLevel;
     public winston: Winston.Logger;
+    private loggerOptions: Winston.LoggerOptions;
 
-    constructor() {
-        this.logLevel = LogLevel.info;
+    constructor(loggerOptions?: Winston.LoggerOptions) {
+        this.loggerOptions = loggerOptions;
+        this.logLevel = LogLevel.info;        
     }
 
     public get logLevel() {
@@ -22,7 +25,7 @@ export class Logger {
     public set logLevel(level: LogLevel) {
         if (level !== this.level) {
             this.level = level;
-            this.winston = this.instantiateLogger();
+            this.winston = this.instantiateLogger(this.loggerOptions);
         }
     }
 
@@ -42,37 +45,42 @@ export class Logger {
         return this.level >= LogLevel.error;
     }
 
-    public debug(message: string, ...meta: Array<any>) {
-        this.winston.debug(message, meta);
+    public debug(message: string, ...meta: any[]) {
+        meta.push({caller: parentModule()});
+        this.winston.debug(message, ...meta);
     }
 
-    public info(message: string, ...meta: Array<any>) {
-        this.winston.info(message, meta);
+    public info(message: string, ...meta: any[]) {
+        meta.push({caller: parentModule()});
+        this.winston.info(message, ...meta);
     }
 
-    public warn(message: string, ...meta: Array<any>) {
-        this.winston.warn(message, meta);
+    public warn(message: string, ...meta: any[]) {
+        meta.push({caller: parentModule()});
+        this.winston.warn(message, ...meta);
     }
 
-    public error(message: string, ...meta: Array<any>) {
-        this.winston.error(message, meta);
+    public error(message: string, ...meta: any[]) {
+        meta.push({caller: parentModule()});
+        this.winston.error(message, ...meta);
     }
 
     public inspectObject(object: any) {
         inspect(object, { colors: true, depth: 15 });
     }
 
-    private instantiateLogger() {
-        const logFormatter = Winston.format.printf(info => {
-            return `${info.timestamp} ${info.level}: ${info.message} (${info.ms})`;
-        });
-        const options: Winston.LoggerOptions = {
+    private instantiateLogger(loggerOptions: Winston.LoggerOptions) {
+        
+        const options: Winston.LoggerOptions = loggerOptions || {
             format: Winston.format.combine(
                 Winston.format.timestamp({
                     format: 'YYYY-MM-DD HH:mm:ss'
                 }),
                 Winston.format.ms(),
-                logFormatter
+                Winston.format.printf(info => {
+                    const caller = info.caller ? `@${info.caller}` : '';
+                    return `${info.timestamp} ${info.level}: ${info.message} ${caller} (${info.ms}) `;
+                })
             ),
             level: LogLevel[this.level],
             transports: [
