@@ -1,0 +1,23 @@
+language: node_js
+node_js:
+- '8'
+- '10'
+- '12'
+script:
+- npm run build
+jobs:
+  include:
+  - stage: npm release
+    node_js: '10'
+    script: npm run build
+    deploy:
+      provider: npm
+      edge: true
+      email: biharck@gmail.com
+      skip_cleanup: true
+      api_key:
+        secure: kwMi7IMQigzxVQBSG3t7TDYijRRT/7g4ictkivsZCyrehlpeeHdhqMfCP8XWNrOCWMXEzueXkzNq5Y0vR8xnhQWQclw/lFZSa2wNpqI8rAhu/d8F8CUYwhCOpkh4qlRKkzvzs4cj7nbZ9mqR75sZBlcz5849myg8c6ijVxm1Bdm6aQ6jo87cSQdOkwhAzdeU3EYcusk2VtPCniGeDnrzgF/zvj51swTF1ZT8/bi/LXhbDRh9Ed1ev31nsnRsT2OaNyngo/95aVMt/la3QwbfrSwb136ai+E9nn8e56Yl+6s6UWkH1ABcP8Dc9cVbsMyGSwW3CgUFmmQnzfGv5lY7muPtu4E8jZETndY4TR/PdIC5Dz/O+yz+0zL54shB3/Vq5pTchXz5y/fE8/u7C1hPxG+AjTUPOIijUeFmutjFhUSUocNi+L/WtAm6ZFfcF29km9PUfsWL/nRUIG1UgBthiQpjJeMmvpTLxsOKqf8ra/Ana7TJVsvKysA/ug6hV46kxgZyfkQVdLKzfkJy70UtkIia0L4be3G5fi0zL3n/OloXPEDHp8xFX+P7F9tk9HgUN00DjAp9KNs47rjQh+y4i0pBwhNIiZTcCS2rr5qdwg+Qh92nrV6jq+VI2ZhQ2fidtVELQCZdr7YZm+zU3PyeibjPIgQybuGCXadRxmbJa44=
+      on:
+        tags: true
+        repo: biharck/typescript-loggable
+  

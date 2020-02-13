@@ -5,6 +5,7 @@
   "author": "Biharck Araújo",
   "main": "./dist/typescript-loggable.js",
   "typings": "./dist/typescript-loggable.d.ts",
+  "keywords": ["logger", "logable", "loggin", "tools", "logs"],
   "scripts": {
     "build": "npm run clean && tsc",
     "clean": "rimraf dist",
@@ -18,10 +19,10 @@
   },
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/biharck/typescript-loggable"
   },
   "bugs": {
-    "url": ""
+    "url": "https://github.com/biharck/typescript-loggable/issues"
   },
   "directories": {
     "lib": "dist"
@@ -38,7 +39,6 @@
   },
   "dependencies": {
     "jest": "^25.1.0",
-    "parent-module": "^2.0.0",
     "ts-node": "^8.6.2",
     "winston": "^3.2.1"
   }

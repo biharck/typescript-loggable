@@ -1,18 +1,16 @@
-'use strict';
-
 import { inspect } from 'util';
 import * as Winston from 'winston';
-const parentModule = require('parent-module');
+import callsites from 'callsites';
 
 export enum LogLevel {
     error, warn, info, debug
 }
 export class Logger {
 
-    private static instance: Logger;
-    
+    private static instance: Logger;    
     private level: LogLevel;
     public winston: Winston.Logger;
+    private caller: boolean;
     
     private constructor() {
         this.logLevel = LogLevel.info;   
@@ -20,7 +18,7 @@ export class Logger {
 
     public static getInstance(): Logger {
         if (!Logger.instance) {
-            Logger.instance = new Logger();
+            Logger.instance = new Logger();            
         }
 
         return Logger.instance;
@@ -33,12 +31,17 @@ export class Logger {
     public set logLevel(level: LogLevel) {
         if (level !== this.level) {
             this.level = level;
+            this.showCaller = false;
             this.winston = this.instantiateLogger(this.loggerOptions);
         }
     }
 
     public set loggerOptions(options: Winston.LoggerOptions){
         this.winston = this.instantiateLogger(options);
+    }
+
+    public set showCaller(caller: boolean){
+        this.caller = caller;
     }
 
     public isDebugEnabled(): boolean {
@@ -58,27 +61,35 @@ export class Logger {
     }
 
     public debug(message: string, ...meta: Array<any>) {
-        meta.push({caller: parentModule()});
+        this.fillCaller(meta);
         this.winston.debug(message, ...meta);
     }
 
     public info(message: string, ...meta: Array<any>) {
-        meta.push({caller: parentModule()});
+        this.fillCaller(meta);
         this.winston.info(message, ...meta);
     }
 
     public warn(message: string, ...meta: Array<any>) {
-        meta.push({caller: parentModule()});
+        this.fillCaller(meta);
         this.winston.warn(message, ...meta);
     }
 
     public error(message: string, ...meta: Array<any>) {
-        meta.push({caller: parentModule()});
+        this.fillCaller(meta);
         this.winston.error(message, ...meta);
     }
 
     public inspectObject(object: any) {
         inspect(object, { colors: true, depth: 15 });
+    }
+
+    private fillCaller(meta: Array<any>) {
+        if (this.caller){
+            const stacks = callsites();
+            if(stacks)
+                meta.push({ caller: stacks[2].getFileName() });
+        }            
     }
 
     private instantiateLogger(loggerOptions: Winston.LoggerOptions) {
