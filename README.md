@@ -1,6 +1,7 @@
 # Typescript-loggable
 
-[![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
+[![npm version](https://badge.fury.io/js/typescript-loggable.svg)](https://badge.fury.io/js/typescript-loggable)
+[![Build Status](https://travis-ci.org/biharck/typescript-loggable.svg?branch=master)](https://travis-ci.org/biharck/typescript-loggable)
 
 `typescript-loggable` is a tool which encapsulates [Winston](https://github.com/winstonjs/winston) making it cleaner and simple to be used.
 
