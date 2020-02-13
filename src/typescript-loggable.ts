@@ -8,14 +8,22 @@ export enum LogLevel {
     error, warn, info, debug
 }
 export class Logger {
+
+    private static instance: Logger;
     
     private level: LogLevel;
     public winston: Winston.Logger;
-    private loggerOptions: Winston.LoggerOptions;
+    
+    private constructor() {
+        this.logLevel = LogLevel.info;   
+    }
 
-    constructor(loggerOptions?: Winston.LoggerOptions) {
-        this.loggerOptions = loggerOptions;
-        this.logLevel = LogLevel.info;        
+    public static getInstance(): Logger {
+        if (!Logger.instance) {
+            Logger.instance = new Logger();
+        }
+
+        return Logger.instance;
     }
 
     public get logLevel() {
@@ -27,6 +35,10 @@ export class Logger {
             this.level = level;
             this.winston = this.instantiateLogger(this.loggerOptions);
         }
+    }
+
+    public set loggerOptions(options: Winston.LoggerOptions){
+        this.winston = this.instantiateLogger(options);
     }
 
     public isDebugEnabled(): boolean {
@@ -45,22 +57,22 @@ export class Logger {
         return this.level >= LogLevel.error;
     }
 
-    public debug(message: string, ...meta: any[]) {
+    public debug(message: string, ...meta: Array<any>) {
         meta.push({caller: parentModule()});
         this.winston.debug(message, ...meta);
     }
 
-    public info(message: string, ...meta: any[]) {
+    public info(message: string, ...meta: Array<any>) {
         meta.push({caller: parentModule()});
         this.winston.info(message, ...meta);
     }
 
-    public warn(message: string, ...meta: any[]) {
+    public warn(message: string, ...meta: Array<any>) {
         meta.push({caller: parentModule()});
         this.winston.warn(message, ...meta);
     }
 
-    public error(message: string, ...meta: any[]) {
+    public error(message: string, ...meta: Array<any>) {
         meta.push({caller: parentModule()});
         this.winston.error(message, ...meta);
     }
