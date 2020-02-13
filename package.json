@@ -5,7 +5,13 @@
   "author": "Biharck Araújo",
   "main": "./dist/typescript-loggable.js",
   "typings": "./dist/typescript-loggable.d.ts",
-  "keywords": ["logger", "logable", "loggin", "tools", "logs"],
+  "keywords": [
+    "logger",
+    "logable",
+    "loggin",
+    "tools",
+    "logs"
+  ],
   "scripts": {
     "build": "npm run clean && tsc",
     "clean": "rimraf dist",
@@ -38,6 +44,7 @@
     "typescript": "^3.7.5"
   },
   "dependencies": {
+    "callsites": "^3.1.0",
     "jest": "^25.1.0",
     "ts-node": "^8.6.2",
     "winston": "^3.2.1"
