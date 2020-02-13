@@ -1,6 +1,6 @@
 {
   "name": "typescript-loggable",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Typescript logger lib",
   "author": "Biharck Araújo",
   "main": "./dist/typescript-loggable.js",
