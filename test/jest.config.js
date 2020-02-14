@@ -11,11 +11,20 @@ module.exports = {
         "json",
         "node",
     ],
-    testRegex: '(/tests/.*|(\\.|/)(test|spec))\\.(ts|js)x?$',
+    testRegex: '(/unit/.*|(\\.|/)(test|spec))\\.(ts|js)x?$',
     testPathIgnorePatterns: ["dist"],
     coverageDirectory: 'reports/coverage',
     collectCoverageFrom: [
         'src/**/*.{ts,tsx,js,jsx}',
         '!src/**/*.d.ts',
     ],
+    coverageThreshold: {
+        global: {
+            branches: 41,
+            functions: 63,
+            lines: 59,
+            statements: 62
+        }
+    },
+    rootDir: '../'
 };

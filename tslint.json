@@ -9,6 +9,7 @@
         "log",
         "error"
       ],
+      "adjacent-overload-signatures": false,
       "semicolon": [
         true,
         "always"

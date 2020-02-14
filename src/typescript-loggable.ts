@@ -1,4 +1,3 @@
-import { inspect } from 'util';
 import * as Winston from 'winston';
 import callsites from 'callsites';
 
@@ -26,6 +25,10 @@ export class Logger {
 
     public get logLevel() {
         return this.level;
+    }
+
+    public get showCaller(){
+        return this.caller;
     }
 
     public set logLevel(level: LogLevel) {
@@ -78,10 +81,6 @@ export class Logger {
     public error(message: string, ...meta: Array<any>) {
         this.fillCaller(meta);
         this.winston.error(message, ...meta);
-    }
-
-    public inspectObject(object: any) {
-        inspect(object, { colors: true, depth: 15 });
     }
 
     private fillCaller(meta: Array<any>) {

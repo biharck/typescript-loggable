@@ -16,7 +16,7 @@
     "build": "npm run clean && tsc",
     "clean": "rimraf dist",
     "lint": "tslint ./src/**/*.ts ./test/**/*.ts",
-    "test": "jest",
+    "test": "jest --config ./test/jest.config.js --coverage",
     "lint:fix": "tslint --fix ./src/**/.ts ./test/**/.ts -t verbose",
     "tsc": "tsc"
   },
