@@ -4,107 +4,110 @@ import callsites from 'callsites';
 export enum LogLevel {
     error, warn, info, debug
 }
+
+export interface LogConfig {
+    level?: LogLevel;
+    showCaller?: boolean;
+    extra?: object;
+}
+
+export interface MainLogConfig {
+    level?: LogLevel;
+    showCaller?: boolean;
+    loggerOptions?: Winston.LoggerOptions;
+    format?: (logInfo: any) => string;
+}
+
 export class Logger {
+    private static mainLoggerConfig: MainLogConfig = {
+        level: LogLevel.info,
+        showCaller: true
+    };
+    private static mainLogger: Winston.Logger = Logger.instantiateMainLogger();
 
-    private static instance: Logger;    
-    private level: LogLevel;
-    public winston: Winston.Logger;
-    private caller: boolean;
-    
-    private constructor() {
-        this.logLevel = LogLevel.info;   
+    private config: LogConfig;
+    private logger: Winston.Logger;
+
+    constructor() {
+        this.config = Logger.mainLoggerConfig;
+        this.logger = Logger.mainLogger;
     }
 
-    public static getInstance(): Logger {
-        if (!Logger.instance) {
-            Logger.instance = new Logger();            
-        }
-
-        return Logger.instance;
+    public static configureMainLogger(config: MainLogConfig) {
+        this.mainLoggerConfig = config;
+        Logger.mainLogger = Logger.instantiateMainLogger();
     }
 
-    public get logLevel() {
-        return this.level;
-    }
-
-    public get showCaller(){
-        return this.caller;
-    }
-
-    public set logLevel(level: LogLevel) {
-        if (level !== this.level) {
-            this.level = level;
-            this.showCaller = false;
-            this.winston = this.instantiateLogger(this.loggerOptions);
-        }
-    }
-
-    public set loggerOptions(options: Winston.LoggerOptions){
-        this.winston = this.instantiateLogger(options);
-    }
-
-    public set showCaller(caller: boolean){
-        this.caller = caller;
+    public configure(config: LogConfig) {
+        this.config = {
+            level: config.level || Logger.mainLoggerConfig.level,
+            showCaller: config.showCaller !== undefined ? config.showCaller : Logger.mainLoggerConfig.showCaller,
+            extra: config.extra
+        };
+        this.logger = this.createChildLogger();
     }
 
     public isDebugEnabled(): boolean {
-        return this.level === LogLevel.debug;
+        return this.config.level === LogLevel.debug;
     }
 
     public isInfoEnabled(): boolean {
-        return this.level >= LogLevel.info;
+        return this.config.level >= LogLevel.info;
     }
 
     public isWarnEnabled(): boolean {
-        return this.level >= LogLevel.warn;
+        return this.config.level >= LogLevel.warn;
     }
 
     public isErrorEnabled(): boolean {
-        return this.level >= LogLevel.error;
+        return this.config.level >= LogLevel.error;
     }
 
-    public debug(message: string, ...meta: Array<any>) {
-        this.fillCaller(meta);
-        this.winston.debug(message, ...meta);
+    public debug(message: string, meta?: any) {
+        this.logger.debug(message, this.fillCaller(meta));
     }
 
-    public info(message: string, ...meta: Array<any>) {
-        this.fillCaller(meta);
-        this.winston.info(message, ...meta);
+    public info(message: string, meta?: any) {
+        this.logger.info(message, this.fillCaller(meta));
     }
 
-    public warn(message: string, ...meta: Array<any>) {
-        this.fillCaller(meta);
-        this.winston.warn(message, ...meta);
+    public warn(message: string, meta?: any) {
+        this.logger.warn(message, this.fillCaller(meta));
     }
 
-    public error(message: string, ...meta: Array<any>) {
-        this.fillCaller(meta);
-        this.winston.error(message, ...meta);
+    public error(message: string, meta?: any) {
+        this.logger.error(message, this.fillCaller(meta));
     }
 
-    private fillCaller(meta: Array<any>) {
-        if (this.caller){
+    private fillCaller(meta: any) {
+        if (this.config.showCaller) {
             const stacks = callsites();
-            if(stacks)
-                meta.push({ caller: stacks[2].getFileName() });
-        }            
+            if (stacks) {
+                if (!meta) {
+                    meta = {};
+                }
+                meta.caller = stacks[2].getFileName();
+            }
+        }
+        return meta;
     }
 
-    private instantiateLogger(loggerOptions: Winston.LoggerOptions) {
-        
-        const options: Winston.LoggerOptions = loggerOptions || {
+    private createChildLogger() {
+        const childLogger = Logger.mainLogger.child(this.config.extra || {});
+        childLogger.level = LogLevel[this.config.level || LogLevel.info];
+        return childLogger;
+    }
+
+    private static instantiateMainLogger() {
+        const options: Winston.LoggerOptions = Logger.mainLoggerConfig.loggerOptions || {
             format: Winston.format.combine(
                 Winston.format.timestamp({
                     format: 'YYYY-MM-DD HH:mm:ss'
                 }),
                 Winston.format.ms(),
-                Winston.format.printf(info => {
-                    const caller = info.caller ? `@${info.caller}` : '';
-                    return `${info.timestamp} ${info.level}: ${info.message} ${caller} (${info.ms}) `;
-                })
+                (Logger.mainLoggerConfig.format ? Winston.format.printf(Logger.mainLoggerConfig.format) : Winston.format.json())
             ),
-            level: LogLevel[this.level],
+            level: LogLevel[Logger.mainLoggerConfig.level || LogLevel.info],
             transports: [
                 new Winston.transports.Console()
             ]
