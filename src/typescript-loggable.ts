@@ -5,6 +5,24 @@ export enum LogLevel {
     error, warn, info, debug
 }
 
+export const parseLogLevel = (level: string) => {
+    let logLevel: LogLevel;
+    switch (level) {
+        case 'error':
+            logLevel = LogLevel.error;
+            break;
+        case 'warn':
+            logLevel = LogLevel.warn;
+            break;
+        case 'debug':
+            logLevel = LogLevel.debug;
+            break;
+        default:
+            logLevel = LogLevel.info;
+    }
+    return logLevel;
+};
+
 export interface LogConfig {
     level?: LogLevel;
     showCaller?: boolean;
