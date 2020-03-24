@@ -34,6 +34,7 @@ export interface MainLogConfig {
     showCaller?: boolean;
     loggerOptions?: Winston.LoggerOptions;
     format?: (logInfo: any) => string;
+    callerLevel?: number;
 }
 
 export class Logger {
@@ -104,7 +105,7 @@ export class Logger {
                 if (!meta) {
                     meta = {};
                 }
-                meta.caller = stacks[2].getFileName();
+                meta.caller = stacks[Logger.mainLoggerConfig.callerLevel || 2].getFileName();
             }
         }
         return meta;
