@@ -42,14 +42,14 @@ export class Logger {
         level: LogLevel.info,
         showCaller: true
     };
-    private static mainLogger: Winston.Logger = Logger.instantiateMainLogger();
+    private static mainLogger: Winston.Logger;
 
     private config: LogConfig;
     private logger: Winston.Logger;
 
     constructor() {
         this.config = Logger.mainLoggerConfig;
-        this.logger = Logger.mainLogger;
+        this.logger = Logger.getMainLogger();
     }
 
     public static configureMainLogger(config: MainLogConfig) {
@@ -79,7 +79,7 @@ export class Logger {
     }
 
     public isErrorEnabled(): boolean {
-        return this.config.level >= LogLevel.error;
+        return true;
     }
 
     public debug(message: string, meta?: any) {
@@ -112,7 +112,7 @@ export class Logger {
     }
 
     private createChildLogger() {
-        const childLogger = Logger.mainLogger.child(this.config.extra || {});
+        const childLogger = Logger.getMainLogger().child(this.config.extra || {});
         childLogger.level = LogLevel[this.config.level || LogLevel.info];
         return childLogger;
     }
@@ -132,5 +132,12 @@ export class Logger {
             ]
         };
         return Winston.createLogger(options);
+    }
+
+    private static getMainLogger() {
+        if (!Logger.mainLogger) {
+            Logger.mainLogger = Logger.instantiateMainLogger();
+        }
+        return Logger.mainLogger;
     }
 }
