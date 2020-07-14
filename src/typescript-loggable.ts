@@ -121,7 +121,7 @@ export class Logger {
         const options: Winston.LoggerOptions = Logger.mainLoggerConfig.loggerOptions || {
             format: Winston.format.combine(
                 Winston.format.timestamp({
-                    format: 'YYYY-MM-DD HH:mm:ss'
+                    format: 'YYYY-MM-DDTHH:mm:ss.SSSZZ'
                 }),
                 Winston.format.ms(),
                 (Logger.mainLoggerConfig.format ? Winston.format.printf(Logger.mainLoggerConfig.format) : Winston.format.json())
