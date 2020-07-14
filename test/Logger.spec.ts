@@ -76,7 +76,7 @@ describe('typescript-loggable', () => {
                 transports: expect.arrayContaining([expect.any(Winston.transports.Console)])
             }));
             expect(mockFormatTimestamp).toBeCalledWith({
-                format: 'YYYY-MM-DD HH:mm:ss'
+                format: 'YYYY-MM-DDTHH:mm:ss.SSSZZ'
             });
             expect(mockFormatCombine).toBeCalledWith('timestamp result', 'ms result', 'json result');
             expect(mockFormatTimestamp).toBeCalledTimes(1);
@@ -104,7 +104,7 @@ describe('typescript-loggable', () => {
                 transports: expect.arrayContaining([expect.any(Winston.transports.Console)])
             }));
             expect(mockFormatTimestamp).toBeCalledWith({
-                format: 'YYYY-MM-DD HH:mm:ss'
+                format: 'YYYY-MM-DDTHH:mm:ss.SSSZZ'
             });
             expect(mockFormatCombine).toBeCalledWith('timestamp result', 'ms result', 'printf result');
             expect(mockFormatTimestamp).toBeCalledTimes(1);
